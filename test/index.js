@@ -905,6 +905,17 @@ test("Issue #62: partial references inside substitutions should work", function 
   is(templates.main.render({}, templates), templatesAsString.main.render({}, templatesAsString))
 });
 
+test("Multi-level template inheritance", function() {
+  var t1 = "...{{$title}}T1Title{{/title}}{{$header}}{{>p1}}{{/header}}{{$content}}T1Content{{/content}}{{$footer}}T1Footer{{/footer}}...";
+  var p1 = "T1Header";
+  var t2 = "{{<t1}}{{$title}}T2Title{{/title}}{{$footer}}{{>p2}}{{/footer}}{{/t1}}";
+  var p2 = "T2Footer";
+  var t3 = "{{<t2}}{{$content}}T3Content{{/content}}{{/t2}}";
+  var t = Hogan.compile("{{<t2}}{{$content}}T3Content{{/content}}{{/t2}}");
+  var s = t.render({}, {t1: t1, p1: p1, t2: t2, p2: p2});
+  is(s, "dfsdfs...T2TitleT1HeaderT3ContentT2Footer...", "DFff");
+});
+
 /* Safety tests */
 
 test("Updates object state", function() {
