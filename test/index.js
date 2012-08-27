@@ -583,17 +583,6 @@ test("Mustache is reprocessed for lambdas in interpolations", function() {
   };
   var s = t.render(context);
   is(s, "text with processing of 42 inside", "the return value of lambdas should be processed mustache.");
-
-  context = {
-    bar: "<b>42</b>",
-    foo: function() {
-      return function() {
-        return "processing of {{{bar}}}";
-      };
-    }
-  };
-  s = t.render(context);
-  is(s, "text with processing of <b>42</b> inside", "the return value of lambdas should be processed mustache, including triple-stache.");
 });
 
 test("Nested Section", function() {
@@ -1135,5 +1124,21 @@ test("Lambda expression in inherited template subsections", function() {
     var template = Hogan.compile(text);
 
     var result = template.render({lambda: lambda}, {partial: Hogan.compile(partial)});
-    is(result, 'altered child1 - altered parent2', 'Lambda replacement failed with template inheritance');
+    is(result, 'altered child1 - altered parent2', 'Lambda replacement works correctly with template inheritance');
+});
+
+test("Implicit iterator lambda evaluation", function () {
+    var lambda = function() {
+        return function() {
+            return 'evaluated'
+        }
+    };
+
+    var list = [lambda];
+
+    var text = '{{#list}}{{.}}{{/list}}';
+    var template = Hogan.compile(text);
+
+    var result = template.render({list: list});
+    is(result, 'evaluated', '{{.}} lambda correctly evaluated');
 });
