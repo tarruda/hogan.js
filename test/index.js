@@ -900,9 +900,9 @@ test("Multi-level template inheritance", function() {
   var t2 = "{{<t1}}{{$title}}T2Title{{/title}}{{$footer}}{{>p2}}{{/footer}}{{/t1}}";
   var p2 = "T2Footer";
   var t3 = "{{<t2}}{{$content}}T3Content{{/content}}{{/t2}}";
-  var t = Hogan.compile("{{<t2}}{{$content}}T3Content{{/content}}{{/t2}}");
+  var t = Hogan.compile(t3);
   var s = t.render({}, {t1: t1, p1: p1, t2: t2, p2: p2});
-  is(s, "dfsdfs...T2TitleT1HeaderT3ContentT2Footer...", "DFff");
+  is(s, "...T2TitleT1HeaderT3ContentT2Footer...", "Should inherit/override blocks defined in 'grandparent' template");
 });
 
 /* Safety tests */
